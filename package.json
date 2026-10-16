@@ -1,0 +1,29 @@
+{
+  "name": "itsc3155-final-project",
+  "version": "1.0.0",
+  "description": "Job application tracking and hiring discussion web application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sophiazhu02/itsc3155-final-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/sophiazhu02/itsc3155-final-project/issues"
+  },
+  "homepage": "https://github.com/sophiazhu02/itsc3155-final-project#readme",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}
