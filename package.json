@@ -2,8 +2,12 @@
   "name": "itsc3155-final-project",
   "version": "1.0.0",
   "description": "Job application tracking and hiring discussion web application",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,11 +23,15 @@
   },
   "homepage": "https://github.com/sophiazhu02/itsc3155-final-project#readme",
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^26.6.5",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "allowScripts": {
     "esbuild@0.28.2": true
+  },
+  "dependencies": {
+    "express": "^5.3.0"
   }
 }
