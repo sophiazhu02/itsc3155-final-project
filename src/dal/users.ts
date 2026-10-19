@@ -1,32 +1,48 @@
-import { db, User, NewUser, UserUpdate } from "../database/database.js";
+import {
+  db,
+  User,
+  NewUser,
+  UserUpdate,
+  PublicUser,
+} from "../database/database.js";
 
-export async function getAllUsers(): Promise<User[]> {
+// Everything except password_hash
+const publicColumns = [
+  "id",
+  "name",
+  "email",
+  "created_at",
+  "updated_at",
+] as const;
+
+export async function getAllUsers(): Promise<PublicUser[]> {
   return await db
     .selectFrom("users")
-    .selectAll()
+    .select(publicColumns)
     .orderBy("id", "asc")
     .execute();
 }
 
-export async function getUserById(id: number): Promise<User | undefined> {
+export async function getUserById(id: number): Promise<PublicUser | undefined> {
   return await db
     .selectFrom("users")
-    .selectAll()
+    .select(publicColumns)
     .where("id", "=", id)
     .executeTakeFirst();
 }
 
-export async function getUserByUsername(
-  username: string,
-): Promise<User | undefined> {
+export async function getUserByEmail(
+  email: string,
+): Promise<PublicUser | undefined> {
   return await db
     .selectFrom("users")
-    .selectAll()
-    .where("username", "=", username)
+    .select(publicColumns)
+    .where("email", "=", email)
     .executeTakeFirst();
 }
 
-export async function getUserByEmail(
+// For login only: this one returns password_hash, so never send it to a client
+export async function getUserAuthByEmail(
   email: string,
 ): Promise<User | undefined> {
   return await db
@@ -36,23 +52,23 @@ export async function getUserByEmail(
     .executeTakeFirst();
 }
 
-export async function createUser(user: NewUser): Promise<User> {
+export async function createUser(user: NewUser): Promise<PublicUser> {
   return await db
     .insertInto("users")
     .values(user)
-    .returningAll()
+    .returning(publicColumns)
     .executeTakeFirstOrThrow();
 }
 
 export async function updateUser(
   id: number,
   updates: UserUpdate,
-): Promise<User | undefined> {
+): Promise<PublicUser | undefined> {
   return await db
     .updateTable("users")
-    .set(updates)
+    .set({ ...updates, updated_at: new Date() })
     .where("id", "=", id)
-    .returningAll()
+    .returning(publicColumns)
     .executeTakeFirst();
 }
 

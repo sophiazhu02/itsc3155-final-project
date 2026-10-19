@@ -13,9 +13,11 @@ const { Pool } = pg;
 
 export interface UsersTable {
   id: Generated<number>;
-  username: string;
+  name: string;
   email: string;
+  password_hash: string;
   created_at: Generated<Date>;
+  updated_at: Generated<Date>;
 }
 
 export interface Database {
@@ -23,6 +25,7 @@ export interface Database {
 }
 
 export type User = Selectable<UsersTable>;
+export type PublicUser = Omit<User, "password_hash">;
 export type NewUser = Insertable<UsersTable>;
 export type UserUpdate = Updateable<UsersTable>;
 
