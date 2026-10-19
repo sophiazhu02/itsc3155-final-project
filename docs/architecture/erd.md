@@ -1,7 +1,7 @@
 
-# Database ERD (Draft)
+# Database ERD
 
-This is the initial database design for our job application tracker. The schema is subject to change as we finalize the application's features.
+Database design for our job application tracker and job-specific discussion forum.
 
 ```mermaid
 erDiagram
@@ -11,22 +11,32 @@ erDiagram
         string email UK
         string password_hash
         datetime created_at
+        datetime updated_at
     }
 
     COMPANIES {
         int id PK
         string name
         string website
+        datetime created_at
     }
 
     JOB_LISTINGS {
         int id PK
         int company_id FK
+        int created_by FK
         string title
+        string description
         string location
+        string city
+        string state
         string employment_type
         string url
+        string normalized_url UK
+        string external_job_id
         datetime posted_at
+        datetime created_at
+        datetime updated_at
     }
 
     APPLICATIONS {
@@ -37,6 +47,17 @@ erDiagram
         string status
         datetime applied_at
         string notes
+        boolean share_insights
+        datetime created_at
+        datetime updated_at
+    }
+
+    APPLICATION_EVENTS {
+        int id PK
+        int application_id FK
+        string event_type
+        datetime occurred_at
+        string notes
         datetime created_at
     }
 
@@ -44,7 +65,9 @@ erDiagram
         int id PK
         int user_id FK
         string name
-        string storage_key
+        string storage_key UK
+        string original_filename
+        string content_type
         datetime uploaded_at
     }
 
@@ -55,6 +78,7 @@ erDiagram
         string title
         string content
         datetime created_at
+        datetime updated_at
     }
 
     COMMENTS {
@@ -63,40 +87,35 @@ erDiagram
         int post_id FK
         string content
         datetime created_at
+        datetime updated_at
     }
 
+    USERS o|--o{ JOB_LISTINGS : submits
     USERS ||--o{ APPLICATIONS : tracks
     USERS ||--o{ RESUMES : owns
     USERS ||--o{ POSTS : creates
     USERS ||--o{ COMMENTS : writes
 
     COMPANIES ||--o{ JOB_LISTINGS : has
+
     JOB_LISTINGS ||--o{ APPLICATIONS : associated_with
     JOB_LISTINGS ||--o{ POSTS : has
 
     RESUMES o|--o{ APPLICATIONS : used_for
+
+    APPLICATIONS ||--o{ APPLICATION_EVENTS : has
+
     POSTS ||--o{ COMMENTS : contains
 ```
 
-## Questions for the Team
 
-This ERD is an initial draft based on our current project requirements. We can adjust the tables and relationships as we finalize the application's features.
+## Database Design Notes
 
-### Application Features
-- Should users be able to track applications for jobs that aren't already in the shared job listings database?
-- Do we want companies stored in a separate table, or would storing company information directly in job listings be sufficient?
-- Should users be able to reply to individual comments, or only comment directly on discussion posts?
-
-### Authentication and File Storage
-- How should we handle user authentication and sessions? Will we use password-based authentication with Express sessions or an external authentication provider? (external could count as our "extra feature" but might be more work to implement compared to other "extra feature" options)
-- Which object storage service should we use for uploaded resumes (e.g., Amazon S3)? What file information should we store in the database?
-
-### Database Relationships
-- Which fields should be required versus optional?
-- What should happen to related records when a user, job listing, or discussion post is deleted?
-- Should users be able to reuse the same resume across multiple applications?
-
-### Other Project Requirements
-- Which extra feature should we implement? One option is automated testing with GitHub Actions, which wouldn't require additional database tables.
-
-We should agree on the main database structure before finalizing the Kysely migrations, but smaller changes can still be made later.
+- **Required CRUD resources:** Users, Posts, and Comments.
+- **Job listings:** Users can submit job listings. Duplicate listings will be checked using URLs, company job IDs, and possible matches.
+- **Applications:** Each application belongs to one user and one job listing. Applications are private and may optionally reference a resume.
+- **Application timelines:** Application events track stages such as applying, interviews, offers, and rejections.
+- **Community statistics:** Users can optionally share anonymous hiring insights. `share_insights` defaults to `false`.
+- **Resumes:** Files will be stored in object storage, with file information saved in PostgreSQL.
+- **Deletion behavior:** Deleting applications removes their events, deleting posts removes their comments, and deleting resumes sets the associated application's `resume_id` to NULL.
+- **Authentication:** Passwords will be stored as hashes. Session handling will be implemented in the backend.
