@@ -4,7 +4,9 @@
   "description": "Job application tracking and hiring discussion web application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "tsx src/database/migrate.ts",
+    "db:check": "tsx src/check-db.ts"
   },
   "repository": {
     "type": "git",
@@ -20,10 +22,16 @@
   "homepage": "https://github.com/sophiazhu02/itsc3155-final-project#readme",
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "allowScripts": {
     "esbuild@0.28.2": true
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8",
+    "kysely": "^0.29.7",
+    "pg": "^8.23.1"
   }
 }
