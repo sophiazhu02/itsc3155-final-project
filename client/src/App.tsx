@@ -1,9 +1,9 @@
 
-import { Link, Routes, Route } from 'react-router'
-import './App.css'
+import { Link, Route, Routes, useLocation } from 'react-router'
+import Login from './pages/Login'
 
 function Home() {
-  return <h2>Welcome to Job Tracker</h2>
+  return <h2>Welcome to CareerSquare</h2>
 }
 
 function Applications() {
@@ -14,22 +14,22 @@ function JobListings() {
   return <h2>Job Listings</h2>
 }
 
-function Login() {
-  return <h2>Login</h2>
-}
+export default function App() {
+  const location = useLocation()
+  const isLoginPage = location.pathname === '/login'
 
-function App() {
   return (
     <>
-      <header>
-        <h1>Job Tracker</h1>
-        <nav>
-          <Link to="/">Home</Link> |{' '}
-          <Link to="/applications">My Applications</Link> |{' '}
-          <Link to="/jobs">Job Listings</Link> |{' '}
-          <Link to="/login">Login</Link>
-        </nav>
-      </header>
+      {!isLoginPage && (
+        <header className="navbar">
+          <Link to="/">CareerSquare</Link>
+          <nav>
+            <Link to="/applications">My Applications</Link>
+            <Link to="/jobs">Job Listings</Link>
+            <Link to="/login">Log in</Link>
+          </nav>
+        </header>
+      )}
 
       <main>
         <Routes>
@@ -42,5 +42,3 @@ function App() {
     </>
   )
 }
-
-export default App
