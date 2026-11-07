@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Kysely, PostgresDialect } from 'kysely';
-import { FileMigrationProvider, Migrator } from 'kysely/migration';
+import { Migrator, type Migration, type MigrationProvider } from 'kysely/migration';
 import pg from 'pg';
 
 if (!process.env.DATABASE_URL) {
@@ -19,16 +19,27 @@ const db = new Kysely<{}>({
 });
 
 
-const migrator = new Migrator({
-  db,
-  provider: new FileMigrationProvider({
-    fs,
-    path,
-    migrationFolder: fileURLToPath(
-      new URL('./migrations/', import.meta.url),
-    ),
-  }),
-});
+const migrationFolder = fileURLToPath(new URL('./migrations/', import.meta.url));
+
+// Kysely's FileMigrationProvider imports plain paths like C:\...\file.ts,
+// which Node rejects on Windows. Importing file:// URLs works on every OS.
+const provider: MigrationProvider = {
+  async getMigrations() {
+    const migrations: Record<string, Migration> = {};
+
+    for (const fileName of await fs.readdir(migrationFolder)) {
+      if (!/\.(ts|js)$/.test(fileName) || fileName.endsWith('.d.ts')) continue;
+
+      const fileUrl = pathToFileURL(path.join(migrationFolder, fileName)).href;
+      const migration = await import(fileUrl);
+      migrations[fileName.replace(/\.(ts|js)$/, '')] = migration;
+    }
+
+    return migrations;
+  },
+};
+
+const migrator = new Migrator({ db, provider });
 
 try {
   const { error, results } = await migrator.migrateToLatest();
