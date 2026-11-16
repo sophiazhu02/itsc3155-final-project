@@ -1,4 +1,5 @@
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router'
+import Logo from './components/Logo'
 import Login from './pages/Login'
 import AccountSettings from './pages/AccountSettings'
 import JobListings from './pages/JobListings'
@@ -29,9 +30,8 @@ export default function App() {
       {!isLoginPage && (
         <header className="navbar">
           <div className="navbar-inner">
-            <Link to="/" className="navbar-brand">
-              <span className="brand-mark" aria-hidden="true">▣</span>
-              CareerSquare
+            <Link to="/" className="navbar-brand" aria-label="careersquare home">
+              <Logo size={26} />
             </Link>
             <nav className="navbar-links">
               <NavLink to="/applications">My Applications</NavLink>

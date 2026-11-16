@@ -1,5 +1,6 @@
 
 import { useState, type FormEvent } from 'react'
+import Logo from '../components/Logo'
 
 export default function Login() {
   const [isSignup, setIsSignup] = useState(false)
@@ -13,7 +14,9 @@ export default function Login() {
   return (
     <div className="auth-page">
       <section className="auth-left">
-        <h2 className="brand">▣ CareerSquare</h2>
+        <h2 className="brand">
+          <Logo variant="dark" size={30} />
+        </h2>
 
         <h1>
           Track every application.
