@@ -2,13 +2,10 @@ import { Link, NavLink, Route, Routes, useLocation } from 'react-router'
 import Login from './pages/Login'
 import AccountSettings from './pages/AccountSettings'
 import JobListings from './pages/JobListings'
+import Applications from './pages/Applications'
 
 function Home() {
   return <h2>Welcome to CareerSquare</h2>
-}
-
-function Applications() {
-  return <h2>My Applications</h2>
 }
 
 // Placeholder until login is wired up to the backend
