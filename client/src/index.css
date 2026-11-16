@@ -35,6 +35,31 @@ button {
   --danger: #b3261e;
   --danger-border: #e8b7b2;
   --chip-bg: #ececea;
+  --brand-navy: #1c2a4b;
+  --brand-accent: var(--accent);
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+}
+
+.logo-wordmark {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--brand-navy);
+}
+
+.logo-dark .logo-wordmark {
+  color: #ffffff;
+}
+
+.logo-accent {
+  color: var(--brand-accent);
 }
 
 body {
@@ -60,22 +85,7 @@ body {
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--text);
   text-decoration: none;
-}
-
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  background: var(--accent);
-  color: white;
-  font-size: 13px;
 }
 
 .navbar-links {
@@ -443,8 +453,9 @@ body {
     gap: 12px;
   }
 
-  .navbar-brand {
-    font-size: 0;
+  /* Just the bracket mark on small screens */
+  .navbar-brand .logo-wordmark {
+    display: none;
   }
 
   .navbar-links a {
