@@ -1,13 +1,10 @@
 
 import { Link, Route, Routes, useLocation } from 'react-router'
 import Login from './pages/Login'
+import Applications from './pages/Applications'
 
 function Home() {
   return <h2>Welcome to CareerSquare</h2>
-}
-
-function Applications() {
-  return <h2>My Applications</h2>
 }
 
 function JobListings() {

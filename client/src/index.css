@@ -153,3 +153,168 @@ button {
     padding: 30px 20px;
   }
 }
+
+.status-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.status-filters button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  color: #333;
+  cursor: pointer;
+}
+
+.status-filters button.active {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+
+.applications-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.applications-page h1 {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.applications-page p {
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.applications-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border: 1px solid #e5e5e5;
+}
+
+.applications-table th,
+.applications-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.applications-table th {
+  background-color: #f8f8f8;
+  color: #555;
+  font-size: 14px;
+}
+
+.applications-table td {
+  color: #333;
+  font-size: 14px;
+}
+
+.applications-table td strong {
+  font-weight: 600;
+}
+
+.applications-table td div {
+  color: #777;
+  margin-top: 4px;
+}
+
+.applications-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+
+.add-application-button {
+  background-color: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.application-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 480px;
+  padding: 24px;
+  margin-top: 20px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.application-form h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.application-form label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.application-form input,
+.application-form select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  color: #333;
+  font: inherit;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.form-actions button {
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  color: #222;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background-color: #222;
+  color: white;
+  border-color: #222;
+}
+
+.application-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 0 !important;
+}
+
+.application-actions button {
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #333;
+  cursor: pointer;
+}
+
+.application-actions button:hover {
+  background: #f5f5f5;
+}
+
+.application-actions .delete-button {
+  color: #c0392b;
+  border-color: #e8c4c0;
+}
