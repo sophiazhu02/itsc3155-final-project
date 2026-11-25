@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { mockJobListings, type JobListing } from '../data/mockJobListings'
+import { useEffect, useMemo, useState } from 'react'
+import { fetchJobListings, type JobListing } from '../api/jobListings'
 
 type SortOption = 'newest' | 'oldest' | 'most-posts'
 
@@ -8,10 +8,9 @@ function formatPlace(listing: JobListing) {
   return listing.location ?? listing.city ?? listing.state ?? ''
 }
 
-function formatAdded(date: string) {
-  // Parse as a local date so "2026-09-30" doesn't shift to Sep 29 in US time zones
-  const [year, month, day] = date.split('-').map(Number)
-  return new Date(year, month - 1, day).toLocaleDateString('en-US', {
+function formatAdded(timestamp: string) {
+  // created_at is a full ISO timestamp, so the browser converts it to local time
+  return new Date(timestamp).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
   })
@@ -22,7 +21,26 @@ export default function JobListings() {
   const [type, setType] = useState('all')
   const [sort, setSort] = useState<SortOption>('newest')
 
-  const listings = mockJobListings
+  const [listings, setListings] = useState<JobListing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchJobListings(controller.signal)
+      .then((data) => {
+        setListings(data)
+        setError(null)
+      })
+      .catch((err: unknown) => {
+        if (controller.signal.aborted) return
+        setError(err instanceof Error ? err.message : 'Could not load job listings')
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false)
+      })
+    return () => controller.abort()
+  }, [])
 
   const types = useMemo(
     () => [...new Set(listings.map((l) => l.employment_type).filter((t): t is string => !!t))].sort(),
@@ -36,7 +54,7 @@ export default function JobListings() {
       const matchesSearch =
         !query ||
         l.title.toLowerCase().includes(query) ||
-        l.company_name.toLowerCase().includes(query)
+        (l.company_name ?? '').toLowerCase().includes(query)
       const matchesType = type === 'all' || l.employment_type === type
       return matchesSearch && matchesType
     })
@@ -88,7 +106,13 @@ export default function JobListings() {
         </label>
       </div>
 
-      {visible.length === 0 ? (
+      {loading ? (
+        <div className="card empty-state">Loading job listings…</div>
+      ) : error ? (
+        <div className="card empty-state" role="alert">{error}</div>
+      ) : listings.length === 0 ? (
+        <div className="card empty-state">No job listings yet.</div>
+      ) : visible.length === 0 ? (
         <div className="card empty-state">No listings match your search.</div>
       ) : (
         <ul className="listing-list">
@@ -105,9 +129,11 @@ export default function JobListings() {
               <div className="listing-stats">
                 <span>{listing.post_count} posts</span>
                 <span>Added {formatAdded(listing.created_at)}</span>
-                <span className={listing.in_tracker ? 'badge badge-tracked' : 'badge'}>
-                  {listing.in_tracker ? 'In your tracker' : 'Not tracked'}
-                </span>
+                {listing.in_tracker !== undefined && (
+                  <span className={listing.in_tracker ? 'badge badge-tracked' : 'badge'}>
+                    {listing.in_tracker ? 'In your tracker' : 'Not tracked'}
+                  </span>
+                )}
               </div>
             </li>
           ))}

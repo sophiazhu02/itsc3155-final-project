@@ -1,9 +1,41 @@
+import { sql } from "kysely";
 import {
   db,
   JobListing,
   NewJobListing,
   JobListingUpdate,
 } from "../database/database.js";
+
+// A listing plus the extra fields the Job Listings page shows
+export type JobListingSummary = JobListing & {
+  company_name: string | null;
+  post_count: number;
+};
+
+export async function getJobListingSummaries(
+  filters: { companyId?: number; createdBy?: number } = {},
+): Promise<JobListingSummary[]> {
+  let query = db
+    .selectFrom("job_listings as jl")
+    .leftJoin("companies as c", "c.id", "jl.company_id")
+    .leftJoin("posts as p", "p.job_listing_id", "jl.id")
+    .selectAll("jl")
+    .select([
+      "c.name as company_name",
+      sql<number>`count(p.id)::int`.as("post_count"),
+    ])
+    .groupBy(["jl.id", "c.id"])
+    .orderBy("jl.id", "asc");
+
+  if (filters.companyId !== undefined) {
+    query = query.where("jl.company_id", "=", filters.companyId);
+  }
+  if (filters.createdBy !== undefined) {
+    query = query.where("jl.created_by", "=", filters.createdBy);
+  }
+
+  return await query.execute();
+}
 
 export async function getAllJobListings(): Promise<JobListing[]> {
   return await db

@@ -1,9 +1,7 @@
 import { Router } from "express";
 import {
-  getAllJobListings,
+  getJobListingSummaries,
   getJobListingById,
-  getJobListingsByCompany,
-  getJobListingsByUser,
   createJobListing,
   updateJobListing,
   deleteJobListing,
@@ -27,7 +25,7 @@ jobListingsRouter.get("/", async (req, res) => {
     if (!Number.isInteger(companyId) || companyId < 1) {
       throw new HttpError(400, "Invalid company_id");
     }
-    const listings = await getJobListingsByCompany(companyId);
+    const listings = await getJobListingSummaries({ companyId });
     return res.status(200).json(listings);
   }
 
@@ -36,11 +34,11 @@ jobListingsRouter.get("/", async (req, res) => {
     if (!Number.isInteger(userId) || userId < 1) {
       throw new HttpError(400, "Invalid created_by");
     }
-    const listings = await getJobListingsByUser(userId);
+    const listings = await getJobListingSummaries({ createdBy: userId });
     return res.status(200).json(listings);
   }
 
-  const listings = await getAllJobListings();
+  const listings = await getJobListingSummaries();
   res.status(200).json(listings);
 });
 
